@@ -1,0 +1,23 @@
+
+telegram:
+  bot:
+    token1: ${TELEGRAM_TOKEN1}
+    id1: ${TELEGRAM_ID1}
+
+    token2: ${TELEGRAM_TOKEN2}
+    id2: ${TELEGRAM_ID2}
+
+    token3: ${TELEGRAM_TOKEN3}
+    id3: ${TELEGRAM_ID3}
+
+    token4: ${TELEGRAM_TOKEN4}
+    id4: ${TELEGRAM_ID4}
+    topic41: ${TOPIC_4}
+
+spring:
+  application:
+    name: "ISTAD-LMS"
+  profiles:
+    active: dev
+server:
+  port: 8080
