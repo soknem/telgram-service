@@ -39,10 +39,19 @@ public class WebhookController {
         processWebhookPayload(payload, "PetManagement");
     }
 
+    @PostMapping(value = "/testing", consumes = "application/json")
+    public void handleTestingWebhook(@RequestBody Map<String, Object> payload, @RequestHeader(value = "X-Gitlab-Token",
+            required = false) String token) {
+        processWebhookPayload(payload, "Testing");
+    }
+
     private void processWebhookPayload(Map<String, Object> payload, String projectName) {
 
         String ref = (String) payload.get("ref");
         String branch = ref.replace("refs/heads/", "");
+
+        Map<String, Object> repository = (Map<String, Object>) payload.get("repository");
+        String repoName = (String) repository.get("name");
 
         List<Map<String, Object>> commits = (List<Map<String, Object>>) payload.get("commits");
 
@@ -52,7 +61,7 @@ public class WebhookController {
             String message = (String) commit.get("message");
             String dateTime = (String) commit.get("timestamp");
 
-            telegramService.sendGitPushInfo(projectName, authorName, message, branch, dateTime);
+            telegramService.sendGitPushInfo(repoName,projectName, authorName, message, branch, dateTime);
         }
     }
 }

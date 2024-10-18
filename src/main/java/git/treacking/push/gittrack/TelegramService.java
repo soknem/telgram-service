@@ -41,15 +41,22 @@ public class TelegramService {
     @Value("${telegram.bot.topic41}")
     private String messageThreadId;
 
+    @Value("${telegram.bot.token5}")
+    private String botToken5;
+
+    @Value("${telegram.bot.id5}")
+    private String chatId5;
+
+    @Value("${telegram.bot.topic5}")
+    private String messageThreadId5;
+
     private final RestTemplate restTemplate;
 
 
-    public void sendGitPushInfo(String projectName, String author, String message, String branch, String dateTime) {
-
+    public void sendGitPushInfo(String repoName, String projectName, String author, String message, String branch,
+                                String dateTime) {
         String botToken;
-
-        String topic=null;
-
+        String topic = null;
         String chatId = switch (projectName) {
             case "API" -> {
                 botToken = botToken1;
@@ -64,9 +71,14 @@ public class TelegramService {
                 yield chatId3;
             }
             case "PetManagement" -> {
-                topic=messageThreadId;
+                topic = messageThreadId;
                 botToken = botToken4;
                 yield chatId4;
+            }
+            case "Testing" -> {
+                topic = messageThreadId5;
+                botToken = botToken5;
+                yield chatId5;
             }
             default -> throw new IllegalArgumentException("Unknown project name: " + projectName);
         };
@@ -74,17 +86,19 @@ public class TelegramService {
         // Format dateTime to dd/MM/yyyy HH:mm:ss
         String formattedDateTime = formatDateTime(dateTime);
 
-        String telegramMessage = String.format("""
-        NEW ACTION..!
-        ________________________________
+        // Adjust message format to use Markdown and clickable links
+        String telegramMessage = String.format(""" 
+                🎉 *NEW ACTION!* 🎉 
+                ----------------------------------------
+                
+                • *Repository* : `%s` 
+                • *Author*        : `%s` 
+                • *Message*     : `%s` 
+                • *Branch*        : `%s` 
+                • *DateTime*   : `%s` 
+                ----------------------------------------
+                """, repoName, author, message, branch, formattedDateTime);
 
-        Project  : %s
-        Author   : %s
-        Message  : %s
-        Branch   : %s
-        DateTime : %s
-        ________________________________
-        """, projectName, author, message, branch, formattedDateTime);
 
         String url = String.format("https://api.telegram.org/bot%s/sendMessage", botToken);
         System.out.println(url);
@@ -94,11 +108,12 @@ public class TelegramService {
 
         // Add message_thread_id if provided
         String requestJson;
-        if (messageThreadId != null) {
-            requestJson = String.format("{\"chat_id\":\"%s\",\"text\":\"%s\",\"message_thread_id\":%s}", chatId,
-                    telegramMessage, topic);
+        if (topic != null) {
+            requestJson = String.format("{\"chat_id\":\"%s\",\"text\":\"%s\",\"message_thread_id\":%s,\"parse_mode\":\"Markdown\"}",
+                    chatId, telegramMessage, topic);
         } else {
-            requestJson = String.format("{\"chat_id\":\"%s\",\"text\":\"%s\"}", chatId, telegramMessage);
+            requestJson = String.format("{\"chat_id\":\"%s\",\"text\":\"%s\",\"parse_mode\":\"Markdown\"}",
+                    chatId, telegramMessage);
         }
 
         HttpEntity<String> entity = new HttpEntity<>(requestJson, headers);
@@ -108,6 +123,7 @@ public class TelegramService {
             throw new RuntimeException("Failed to send message to Telegram");
         }
     }
+
 
     private String formatDateTime(String dateTime) {
         try {

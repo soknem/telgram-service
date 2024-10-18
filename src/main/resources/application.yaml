@@ -14,6 +14,10 @@ telegram:
     id4: ${TELEGRAM_ID4}
     topic41: ${TOPIC_4}
 
+    token5: ${TELEGRAM_TOKEN5}
+    id5: ${TELEGRAM_ID5}
+    topic5: ${TOPIC_5}
+
 spring:
   application:
     name: "ISTAD-LMS"
