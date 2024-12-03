@@ -18,6 +18,14 @@ telegram:
     id5: ${TELEGRAM_ID5}
     topic5: ${TOPIC_5}
 
+    khotixs-token: ${KHTOIXS_TELEGRAM_TOKEN}
+    khotixs-id: ${KHOTIXS_TELEGRAM_ID}
+    khotixs-topic: ${KHTOIXS_TOPIC}
+
+    flutter-token: ${FLUTTER_TELEGRAM_TOKEN}
+    flutter-id: ${FLUTTER_TELEGRAM_ID}
+    flutter-topic: ${FLUTTER_TOPIC}
+
 spring:
   application:
     name: "ISTAD-LMS"
